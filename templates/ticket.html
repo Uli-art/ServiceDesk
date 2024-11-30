@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ 'New Ticket' if ticket is none else 'Edit Ticket' }}</h2>
+
+<form method="post">
+    {% if ticket is not none %}
+        <p><strong>ID:</strong> {{ ticket[0] }}</p>
+        <p><strong>Title:</strong> {{ ticket[1] }}</p>
+        <p><strong>Description:</strong> {{ ticket[2] }}</p>
+        <label for="status">Status:</label>
+        <select name="status" id="status">
+            <option value="open" {% if ticket[3] == 'open' %}selected{% endif %}>Open</option>
+            <option value="in_progress" {% if ticket[3] == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="closed" {% if ticket[3] == 'closed' %}selected{% endif %}>Closed</option>
+        </select>
+        <button type="submit">Update</button>
+    {% else %}
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        <button type="submit">Create</button>
+    {% endif %}
+</form>
+{% endblock %}
