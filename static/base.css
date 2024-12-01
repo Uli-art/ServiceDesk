@@ -133,20 +133,20 @@ body {
     gap: 10px;
 }
 
-.login {
-    background: white;
-    color: #2c3e50;
-}
+/*.login {*/
+/*    background: white;*/
+/*    color: #2c3e50;*/
+/*}*/
 
 .login:hover {
     background: #919ebe;
 }
 
-.sign_up {
-    color: white;
-    background: #405469;
-    margin-right: 10px;
-}
+/*.sign_up {*/
+/*    color: white;*/
+/*    background: #405469;*/
+/*    margin-right: 10px;*/
+/*}*/
 
 .sign_up:hover{
     background: #2c3e50;

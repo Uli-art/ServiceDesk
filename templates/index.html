@@ -1,7 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Welcome to ServiceDesk</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-{% endif %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Desk Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+</head>
+
+<body>
+    <section class="section">
+        <h1 class="section-title">Welcome to Service Desk</h1>
+        <div class="card-container">
+
+            <!-- Card 2 -->
+            <div class="card">
+                <img src="/static/images/monitor.png" alt="Create Ticket">
+                <div class="card-content">
+                    <p class="card-title">Create a Ticket</p>
+                    <p class="card-text">Submit a new support ticket for any issues or requests you have.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/create-ticket" class="button">Submit Ticket</a>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="card">
+                <img src="/static/images/phone.png" alt="Knowledge Base">
+                <div class="card-content">
+                    <p class="card-title">Knowledge Base</p>
+                    <p class="card-text">Find answers to common issues and learn how to resolve them.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/knowledge-base" class="button">Explore Articles</a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="/static/images/dashboard.png" alt="Dashboard">
+                <div class="card-content">
+                    <p class="card-title">Dashboard</p>
+                    <p class="card-text">Monitor your service desk tickets and stay up to date with all tasks.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/dashboard" class="button">View Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
+
 {% endblock %}
