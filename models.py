@@ -1,21 +1,21 @@
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 from config import Config
 
 
 class User(UserMixin):
-    def __init__(self, id, username, password_hash, role):
+    def __init__(self, id, username, email, password_hash, role_id):
         self.id = id
         self.username = username
+        self.email = email
         self.password_hash = password_hash
-        self.role = role
+        self.role_id = role_id
 
     @staticmethod
-    def get_by_username(username):
+    def get_user_by_id(id):
         conn = psycopg2.connect(**Config.DATABASE)
         cursor = conn.cursor()
-        cursor.execute('SELECT id, username, password_hash, role FROM users WHERE username = %s;', (username,))
+        cursor.execute('SELECT id, username, email, password_hash, role_id FROM users WHERE id = %s;', (id,))
         user_data = cursor.fetchone()
         conn.close()
         if user_data:
@@ -23,14 +23,52 @@ class User(UserMixin):
         return None
 
     @staticmethod
-    def create_user(username, password, role='user'):
-        password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+    def get_by_username(username):
         conn = psycopg2.connect(**Config.DATABASE)
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s);',
-                       (username, password_hash, role))
+        cursor.execute('SELECT id, username, email, password_hash, role_id FROM users WHERE username = %s;', (username,))
+        user_data = cursor.fetchone()
+        conn.close()
+        if user_data:
+            return User(*user_data)
+        return None
+
+    @staticmethod
+    def get_by_email(email):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, username, email, password_hash, role_id FROM users WHERE email = %s;', (email,))
+        user_data = cursor.fetchone()
+        conn.close()
+        if user_data:
+            return User(*user_data)
+        return None
+
+    def get_hashed_password(self):
+        return self.password_hash
+
+    @staticmethod
+    def validate_user_registration(username, email):
+        if User.get_by_username(username):
+            return False
+        if User.get_by_email(email):
+            return False
+        return True
+
+    @staticmethod
+    def validate_user_login(bcrypt, email, password):
+        user = User.get_by_email(email=email)
+        if user and bcrypt.check_password_hash(user.get_hashed_password(), password):
+            return user
+        return None
+
+    @staticmethod
+    def create_user(username, email, password, role=1):
+        password_hash = password
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO users (username, email, password_hash, role_id) VALUES (%s, %s, %s, %s);',
+                       (username, email, password_hash, role))
         conn.commit()
         conn.close()
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)

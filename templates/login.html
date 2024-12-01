@@ -1,16 +1,16 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <button type="submit">Login</button>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+{% from "_util.html" import render_field %}
+<form id="loginForm" class="form form-register" method="POST" action="" role="form">
+    <h1>LOGIN</h1>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.email, placeholder="email") }}
+    {{ render_field(form.password, placeholder="password") }}
+    <p><input class="btn btn-default btn-submit" type="submit" value="Login"></p>
+    <a href="/register">Don’t have an account?</a><br>
 </form>
-<p>Don't have an account? <a href="/register">Register here</a></p>
+
+
 {% endblock %}

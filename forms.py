@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
+
+from models import User
 
 
 class TicketForm(FlaskForm):
@@ -17,16 +19,22 @@ class CommentForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    role_id = SelectField('Role', choices=[(1, 'User'), (2, 'Admin')], coerce=int)
-    submit = SubmitField('Register')
+    username = StringField('username', validators=[DataRequired(), Length(min=3, max=20)])
+    email = StringField('email', validators=[DataRequired(), Email()])
+    password = PasswordField('password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('register')
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+    email = StringField('email', validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField('password', validators=[DataRequired()])
+    remember_me = BooleanField('remember')
+    submit = SubmitField('login')
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
 

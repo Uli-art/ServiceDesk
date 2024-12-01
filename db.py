@@ -8,8 +8,7 @@ def get_db_connection():
         dbname=Config.DATABASE['dbname'],
         user=Config.DATABASE['user'],
         password=Config.DATABASE['password'],
-        host=Config.DATABASE['host'],
-        port=Config.DATABASE['port'],
+        host=Config.DATABASE['host']
     )
     return conn
 

@@ -3,14 +3,21 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from forms import LoginForm, RegisterForm, TicketForm, CommentForm
 from db import query_db, execute_db
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
-from functools import wraps
 from utils import role_required
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
+bcrypt = Bcrypt(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_user_by_id(user_id)
 
 @app.route('/')
 def index():
@@ -25,36 +32,31 @@ def protected():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = RegisterForm(request.form, csrf_enabled=False)
     if form.validate_on_submit():
-        username = form.username.data
         email = form.email.data
-        password = generate_password_hash(form.password.data)
+        username = form.username.data
+        password = form.password.data
 
-        existing_user = query_db('SELECT * FROM users WHERE username = %s OR email = %s', (username, email), one=True)
-        if existing_user:
-            flash('User with this username or email already exists.', 'danger')
+        if User.validate_user_registration(username, email):
             return redirect(url_for('register'))
 
-        execute_db('INSERT INTO users (username, email, password_hash, role_id) VALUES (%s, %s, %s, %s)',
-                   (username, email, password, 1))
-        flash('User registered successfully.', 'success')
-        return redirect(url_for('index'))
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        User.create_user(email=email, username=username, password=hashed_password)
+        return redirect(url_for('login'))
+    print(form.errors)
     return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = LoginForm(request.form)
     if form.validate_on_submit():
-        username = form.username.data
+        email = form.email.data
         password = form.password.data
-
-        user = query_db('SELECT * FROM users WHERE username = %s', (username,), one=True)
-        if user and check_password_hash(user['password_hash'], password):
-            session['user_id'] = user['id']
-            session['username'] = user['username']
-            session['role_id'] = user['role_id']
+        user = User.validate_user_login(bcrypt, email, password)
+        if user is not None:
+            login_user(user)
             flash('Logged in successfully.', 'success')
             return redirect(url_for('index'))
         flash('Invalid username or password.', 'danger')
@@ -63,8 +65,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    """Выход пользователя из системы"""
-    session.clear()
+    logout_user()
     flash('You have been logged out.', 'success')
     return redirect(url_for('index'))
 
@@ -89,12 +90,13 @@ def tickets():
         flash('Ticket created successfully.', 'success')
         return redirect(url_for('tickets'))
 
-    tickets = query_db('SELECT tickets.*, statuses.name as status, priorities.name as priority, categories.name as category '
-                       'FROM tickets '
-                       'JOIN statuses ON tickets.status_id = statuses.id '
-                       'JOIN priorities ON tickets.priority_id = priorities.id '
-                       'JOIN categories ON tickets.category_id = categories.id '
-                       'WHERE tickets.creator_id = %s', (session['user_id'],))
+    tickets = query_db(
+        'SELECT tickets.*, statuses.name as status, priorities.name as priority, categories.name as category '
+        'FROM tickets '
+        'JOIN statuses ON tickets.status_id = statuses.id '
+        'JOIN priorities ON tickets.priority_id = priorities.id '
+        'JOIN categories ON tickets.category_id = categories.id '
+        'WHERE tickets.creator_id = %s', (session['user_id'],))
     return render_template('tickets.html', form=form, tickets=tickets)
 
 
@@ -219,3 +221,7 @@ def delete_comment(comment_id):
         flash('Comment deleted successfully.', 'success')
 
     return redirect(url_for('comments', ticket_id=comment['ticket_id']))
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8001)

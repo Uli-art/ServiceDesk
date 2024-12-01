@@ -6,8 +6,7 @@ class Config:
         'dbname': 'ServiceDesk',
         'user': 'postgres',
         'password': '1958',
-        'host': 'localhost',
-        'port': 5432
+        'host': '127.0.0.1'
     }
     BCRYPT_LOG_ROUNDS = 12
 
