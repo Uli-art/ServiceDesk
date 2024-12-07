@@ -39,7 +39,6 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
-/* Submit button */
 input[type="submit"] {
     width: 100%;
     padding: 10px;

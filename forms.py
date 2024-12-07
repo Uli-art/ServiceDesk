@@ -2,14 +2,12 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
-from models import User
-
 
 class TicketForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(max=255)])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    category = SelectField('Category', coerce=int)
-    priority = SelectField('Priority', coerce=int)
+    title = StringField('title', validators=[DataRequired(), Length(max=255)])
+    description = TextAreaField('description', validators=[DataRequired()])
+    category = SelectField('category', coerce=int)
+    priority = SelectField('priority', coerce=int)
     submit = SubmitField('Create Ticket')
 
 

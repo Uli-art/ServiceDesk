@@ -1,26 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ 'New Ticket' if ticket is none else 'Edit Ticket' }}</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='tickets.css') }}">
+    <div class="tickets">
+    <a href="{{ url_for('tickets') }}/create_ticket">
+        <div class="ticket add_ticket">
+            <div class="ticket-title"></div>
+            <span class="plus-symbol">+</span>
+        </div>
+    </a>
+        {% for ticket in tickets %}
+            <a href="{{ url_for('tickets') }}/{{ ticket[0] }}">
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <div class="status">#{{ ticket[0] }}</div>
+                        <div class="priority {{ ticket[3] }}">{{ ticket[3] }}</div>
+                    </div>
+                    <div class="ticket-title">{{ ticket[1] }}</div>
+                    <div class="ticket-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M3.5 0A2.5 2.5 0 0 0 1 2.5v11A2.5 2.5 0 0 0 3.5 16h9a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 12.5 0h-9zM12 7v2H4V7h8zm-8-4h8v2H4V3zm0 6h5v2H4v-2z"/>
+                        </svg>
+                        <span>{{ ticket[4] }}</span>
+                    </div>
+                    <div class="responsibilities">
+                        <span>Status: </span>
+                        <div class={{ ticket[2] }}>
+                            <span>{{ ticket[2] }}</span>
+                        </div>
+                    </div>
+                    <div class="agent">
+                        <img src="/static/images/user.png" alt="Agent">
+                        <div class="agent-info">
+                            <div class="name">{{ ticket[5] }}</div>
+                            <div>No groups or companies</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 
-<form method="post">
-    {% if ticket is not none %}
-        <p><strong>ID:</strong> {{ ticket[0] }}</p>
-        <p><strong>Title:</strong> {{ ticket[1] }}</p>
-        <p><strong>Description:</strong> {{ ticket[2] }}</p>
-        <label for="status">Status:</label>
-        <select name="status" id="status">
-            <option value="open" {% if ticket[3] == 'open' %}selected{% endif %}>Open</option>
-            <option value="in_progress" {% if ticket[3] == 'in_progress' %}selected{% endif %}>In Progress</option>
-            <option value="closed" {% if ticket[3] == 'closed' %}selected{% endif %}>Closed</option>
-        </select>
-        <button type="submit">Update</button>
-    {% else %}
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea>
-        <button type="submit">Create</button>
-    {% endif %}
-</form>
 {% endblock %}

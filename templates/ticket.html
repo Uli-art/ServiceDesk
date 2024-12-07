@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='ticket.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tickets.css') }}">
+    {% from "_util.html" import render_field %}
+    <body>
+    <a href="{{ url_for('tickets') }}" id="back"><b> &#8592 Back to tickets</b></a>
+    <div class="qa-container">
+        <div class="question-section">
+            <div class="ticket-header">
+                <h1 class="question-title">{{ ticket[1] }}</h1>
+                <div class=" ticket-header priority {{ ticket[11] }}">{{ ticket[11] }}</div>
+            </div>
+            <div class="responsibilities">
+                <span>Status: </span>
+                <div class={{ ticket[10] }}>
+                    <span>{{ ticket[10] }}</span>
+                </div>
+            </div>
+            <div class="question-meta">
+                <span class="asked">Asked: {{ ticket[9] }}</span>
+            </div>
+            <div class="question-body">
+                <p>{{ ticket[2] }} </p>
+            </div>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <span class="user">{{ comment[2] }}</span> <span class="date">{{ comment[1] }}</span>
+                        <p>{{ comment[0] }}</p>
+                    </div>
+                {% endfor %}
+                <div class="question-meta">
+                    <a id="addComment"><span class="asked">Add comment</span></a>
+                </div>
+
+                <form class="answer-container hidden" id="commentForm" method="POST" action="" role="form">
+                    <h2 class="title is-4">Your Comment</h2>
+                    {{ form.hidden_tag() }}
+                    <textarea id="content" name="content" class="textarea answer-box" placeholder="Type your answer here..." required></textarea>
+                    <div class="button-container">
+                        <p class="privacy-note">
+                            By clicking "Post Your Comment," you agree to our <a href="#">terms of service</a> and
+                            acknowledge you have read our <a href="#">privacy policy</a>.
+                        </p>
+                    </div>
+                    <input id="submit" name="submit" type="submit" value="Add Comment" class="button is-primary">
+                </form>
+            </div>
+
+            <!-- Answers Section -->
+            <div class="answers-section">
+                <h2>Answers</h2>
+                {% for answer in answers %}
+                    <div class="answer">
+                        <div class="answer-body">
+                            <p>{{ answer[0] }}</p>
+                        </div>
+                        <div class="answer-meta">
+                            <span class="user">{{ answer[2] }}</span> |
+                            <span class="date">{{ answer[1] }}</span>
+                        </div>
+                    </div>
+                    </div>
+                {% endfor %}
+            <script>
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const addComment = document.getElementById('addComment');
+                    const commentForm = document.getElementById('commentForm');
+                    addComment.addEventListener('click', () => {
+                        if (commentForm.classList.contains('hidden')) {
+                            commentForm.classList.remove('hidden');
+                        } else {
+                            commentForm.classList.add('hidden');
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    </body>
+{% endblock %}

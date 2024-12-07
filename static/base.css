@@ -52,7 +52,7 @@ body {
     text-align: center;
 }
 
-.sidebar-menu a:hover, .sidebar-menu a.is-active {
+.sidebar-menu a:hover, .sidebar-menu .menu-item.active a {
     background: #34495e;
 }
 
@@ -148,7 +148,7 @@ body {
 /*    margin-right: 10px;*/
 /*}*/
 
-.sign_up:hover{
+.sign_up:hover {
     background: #2c3e50;
     color: white;
 }

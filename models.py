@@ -72,3 +72,32 @@ class User(UserMixin):
         conn.commit()
         conn.close()
 
+
+class Comment:
+    def __init__(self, id, ticket_id, author_id, content):
+        self.id = id
+        self.ticket_id = ticket_id
+        self.author_id = author_id
+        self.content = content
+
+    @staticmethod
+    def create_comment(ticket_id, author_id, content):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO comments (ticket_id, author_id, content) VALUES (%s, %s, %s);',
+                       (ticket_id, author_id, content))
+        conn.commit()
+        conn.close()
+
+
+class Ticket:
+
+    @staticmethod
+    def create_ticket(title, description, priority_id, category_id, creator_id, status_id=1):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO tickets (title, description, priority_id, category_id, creator_id, status_id) '
+                       'VALUES (%s, %s, %s, %s, %s, %s);',
+                       (title, description, priority_id, category_id, creator_id, status_id))
+        conn.commit()
+        conn.close()

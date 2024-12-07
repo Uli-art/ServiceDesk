@@ -5,59 +5,84 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ServiceDesk Dashboard</title>
-{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />#}
+    <title>ServiceDesk</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 </head>
 
 <body>
-    <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>ServiceDesk</h2>
-            </div>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>ServiceDesk</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}"><a
+                    href="{{ url_for('index') }}">Home</a></li>
+            <li class="menu-item {% if request.endpoint == 'dashboard' %}active{% endif %}"><a
+                    href="{{ url_for('tickets') }}">Dashboard</a></li>
+            <li class="menu-item {% if request.endpoint == 'tickets' %}active{% endif %}"><a
+                    href="{{ url_for('tickets') }}">Tickets</a></li>
+            <li class="menu-item {% if request.endpoint == 'requests' %}active{% endif %}"><a href="#">Requests</a></li>
+            <li class="menu-item {% if request.endpoint == 'articles' %}active{% endif %}"><a href="#">Articles</a></li>
+            <li class="menu-item {% if request.endpoint == 'reports' %}active{% endif %}"><a href="#">Reports</a></li>
+        </ul>
+    </aside>
 
-            <ul class="sidebar-menu">
-                <li><a href="{{ url_for('index') }}" class="is-active">Home</a></li>
-                <li><a href="{{ url_for('tickets') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('tickets') }}">Tickets</a></li>
-                <li><a href="#">Requests</a></li>
-                <li><a href="#">Articles</a></li>
-                <li><a href="#">Reports</a></li>
-            </ul>
-        </aside>
-
-        <main class="main-content">
-            <nav class="navbar">
-                <div class="container navbar-container">
-                    <div class="navbar-search">
-                        <input class="input search-bar" type="text" placeholder="Search...">
-                    </div>
-
-                    <div class="navbar-buttons">
-                        {% if current_user.is_authenticated %}
-                            <span class="username">Hello, {{ current_user.username }}</span>
-                            <a href="{{ url_for('logout') }}" class="button is-danger is-small">Logout</a>
-                        {% else %}
-                            <a href="{{ url_for('login') }}" class="button is-small login">Login</a>
-                            <a href="{{ url_for('register') }}" class="button is-small sign_up">Sign Up</a>
-                        {% endif %}
-                    </div>
+    <main class="main-content">
+        <nav class="navbar">
+            <div class="container navbar-container">
+                <div class="navbar-search">
+                    <input class="input search-bar" id="searchInput" type="text" placeholder="Search...">
                 </div>
-            </nav>
-            <section class="content">
-                <div class="container">
-                    {% block content %}
+
+                <div class="navbar-buttons">
+                    {% if current_user.is_authenticated %}
+                        <span class="username">Hello, {{ current_user.username }}</span>
+                        <a href="{{ url_for('logout') }}" class="button is-danger is-small">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="button is-small login">Login</a>
+                        <a href="{{ url_for('register') }}" class="button is-small sign_up">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+        <section class="content">
+            <div class="container">
+                {% block content %}
                     <div class="notification">
                         Welcome to the ServiceDesk Dashboard!
                     </div>
-                    {% endblock %}
-                </div>
-            </section>
-        </main>
-    </div>
+                {% endblock %}
+            </div>
+        </section>
+        <script>
+
+            function searchTickets(filter = '') {
+                const tickets = document.querySelectorAll('.ticket');
+
+                tickets.forEach(ticket => {
+                    const title = ticket.querySelector('.ticket-title').textContent.toLowerCase();
+                    if (title.includes(filter.toLowerCase())) {
+                        ticket.classList.remove('hidden');
+                    } else {
+                        ticket.classList.add('hidden');
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('searchInput');
+
+                searchInput.addEventListener('input', () => {
+                    const filter = searchInput.value;
+                    searchTickets(filter);
+                });
+            });
+        </script>
+
+    </main>
+</div>
 </body>
 
 </html>

@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Desk Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Service Desk Home</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    </head>
 
-<body>
+    <body>
     <section class="section">
         <h1 class="section-title">Welcome to Service Desk</h1>
         <div class="card-container">
@@ -25,7 +25,7 @@
                     <p class="card-text">Submit a new support ticket for any issues or requests you have.</p>
                 </div>
                 <div class="card-footer">
-                    <a href="/create-ticket" class="button">Submit Ticket</a>
+                    <a href="/tickets/create_ticket" class="button">Submit Ticket</a>
                 </div>
             </div>
             <!-- Card 3 -->
@@ -51,8 +51,8 @@
             </div>
         </div>
     </section>
-</body>
+    </body>
 
-</html>
+    </html>
 
 {% endblock %}

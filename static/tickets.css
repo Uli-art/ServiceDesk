@@ -1,0 +1,162 @@
+.tickets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    margin-top: 1%;
+}
+
+.ticket {
+    width: 300px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    position: relative;
+}
+
+.ticket:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.add_ticket {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.plus-symbol {
+    font-size: 110px;
+    font-weight: bold;
+    color: rgba(217, 83, 79, 0.87);
+}
+
+.hidden {
+    display: none;
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ticket-header .status {
+    background-color: #d9534f;
+    color: white;
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.ticket-header .priority {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.ticket-header .Critical {
+    color: #a80f01;
+}
+
+.ticket-header .High {
+    color: #ff1c07;
+}
+
+.ticket-header .Medium {
+    color: #ffc107;
+}
+
+.ticket-header .Low {
+    color: #fff313;
+}
+
+.ticket-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 12px 0;
+}
+
+.ticket-info {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    color: #666;
+}
+
+.ticket-info svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.ticket-info span {
+    font-size: 14px;
+}
+
+.responsibilities {
+    display: flex;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.responsibilities div {
+    display: flex;
+    align-items: center;
+}
+
+.responsibilities div span {
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.responsibilities .Open {
+    color: #d9534f;
+}
+
+.responsibilities .Open::after {
+    content: "🔓";
+}
+
+.responsibilities .In {
+    color: #ffc107;
+}
+
+.responsibilities .In::after {
+    content: "⏳";
+}
+
+.responsibilities .Closed {
+    color: #5cb85c;
+}
+
+.responsibilities .Closed::after {
+    content: "🔒";
+}
+
+.agent {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.agent img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.agent-info {
+    font-size: 14px;
+    color: #666;
+}
+
+.agent-info .name {
+    font-weight: bold;
+    color: #333;
+}

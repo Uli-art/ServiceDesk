@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_ticket.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    {% from "_util.html" import render_field %}
+<body>
+    <div class="form-container">
+        <h2 class="title is-4 has-text-centered">Create Ticket</h2>
+        <form action="" method="POST" id="TicketForm" role="form">
+            {{ form.hidden_tag() }}
+            <div class="field">
+                <label class="label">Title</label>
+                <div class="control">
+                    <input class="input" type="text" name="title" placeholder="Enter ticket title" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <textarea class="textarea" name="description" placeholder="Describe the issue" required></textarea>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Category</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="category" name="category">
+                            <option value="" disabled selected>Select a category</option>
+                            {% for category in categories %}
+                            <option value={{ category[0] }}>{{ category[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+             <div class="field">
+                <label class="label">Priority</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="priority" name="priority" required>
+                            <option value="" disabled selected>Select priority</option>
+                            {% for priority in priorities %}
+                                <option value={{ priority[0] }}>{{ priority[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <input id="submit" name="submit" type="submit" value="Create Ticket" class="button is-primary">
+                <a href="{{ url_for('tickets') }}" class="button is-light"> Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+{% endblock %}

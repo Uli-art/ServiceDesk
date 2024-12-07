@@ -1,9 +1,10 @@
 import psycopg2
 from flask import Flask, render_template, redirect, url_for, flash, request, session
+
 from forms import LoginForm, RegisterForm, TicketForm, CommentForm
 from db import query_db, execute_db
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import User
+from models import User, Comment, Ticket
 from utils import role_required
 from flask_bcrypt import Bcrypt
 
@@ -72,7 +73,7 @@ def logout():
 
 @app.route('/tickets', methods=['GET', 'POST'])
 def tickets():
-    if 'user_id' not in session:
+    if not current_user.is_authenticated:
         flash('Please log in to view tickets.', 'danger')
         return redirect(url_for('login'))
 
@@ -82,7 +83,7 @@ def tickets():
         description = form.description.data
         category_id = form.category.data
         priority_id = form.priority.data
-        creator_id = session['user_id']
+        creator_id = current_user.id
 
         execute_db('INSERT INTO tickets (title, description, category_id, priority_id, creator_id, status_id) '
                    'VALUES (%s, %s, %s, %s, %s, %s)',
@@ -91,13 +92,83 @@ def tickets():
         return redirect(url_for('tickets'))
 
     tickets = query_db(
-        'SELECT tickets.*, statuses.name as status, priorities.name as priority, categories.name as category '
+        'SELECT tickets.id, tickets.title, '
+        'statuses.name as status, priorities.name as priority, categories.name as category, users.username as creator '
         'FROM tickets '
         'JOIN statuses ON tickets.status_id = statuses.id '
         'JOIN priorities ON tickets.priority_id = priorities.id '
         'JOIN categories ON tickets.category_id = categories.id '
-        'WHERE tickets.creator_id = %s', (session['user_id'],))
+        'JOIN users ON tickets.creator_id = users.id and users.role_id = 1 '
+        'WHERE tickets.creator_id = %s', (current_user.id,))
     return render_template('tickets.html', form=form, tickets=tickets)
+
+
+@app.route('/tickets/<int:ticket_id>', methods=['GET', 'POST'])
+def ticket(ticket_id):
+    if not current_user.is_authenticated:
+        flash('Please log in to view and add comments.', 'danger')
+        return redirect(url_for('login'))
+
+    ticket = query_db(
+        'SELECT tickets.*, statuses.name as status, priorities.name as priority, categories.name as category, users.username as creator '
+        'FROM tickets '
+        'JOIN statuses ON tickets.status_id = statuses.id '
+        'JOIN priorities ON tickets.priority_id = priorities.id '
+        'JOIN categories ON tickets.category_id = categories.id '
+        'JOIN users ON tickets.creator_id = users.id and users.role_id = 1 '
+        'WHERE tickets.id = %s', (ticket_id,), one=True)
+    if not ticket:
+        flash('Ticket not found.', 'danger')
+        return redirect(url_for('tickets'))
+    form = CommentForm(request.form)
+    if form.validate_on_submit():
+        content = form.content.data
+        if content:
+            Comment.create_comment(ticket_id, current_user.id, content)
+
+    comments = query_db(
+        'SELECT comments.content, comments.created_at, users.username '
+        'FROM comments '
+        'JOIN users ON comments.author_id = users.id and users.role_id = 1 '
+        'WHERE comments.ticket_id = %s '
+        'ORDER BY comments.created_at DESC', (ticket_id,)
+    )
+
+    answers = query_db(
+        'SELECT comments.content, comments.created_at, users.username '
+        'FROM comments '
+        'JOIN users ON comments.author_id = users.id and users.role_id = 2 '
+        'WHERE comments.ticket_id = %s '
+        'ORDER BY comments.created_at DESC', (ticket_id,)
+    )
+    return render_template('ticket.html', ticket=ticket, comments=comments, answers=answers, form=form)
+
+
+@app.route('/tickets/create_ticket', methods=['GET', 'POST'])
+def create_ticket():
+    if not current_user.is_authenticated:
+        flash('Please log in to view and add comments.', 'danger')
+        return redirect(url_for('login'))
+
+    category_choices = query_db(
+        'SELECT categories.id, categories.name '
+        'FROM categories '
+    )
+
+    priority_choices = query_db(
+        'SELECT priorities.id, priorities.name '
+        'FROM priorities '
+    )
+
+    form = TicketForm(request.form)
+    form.category.choices = category_choices
+    form.priority.choices = priority_choices
+    if form.validate_on_submit():
+        Ticket.create_ticket(form.title.data, form.description.data, form.priority.data,
+                             form.category.data, current_user.id)
+        return redirect(url_for('tickets'))
+
+    return render_template('create_ticket.html', form=form, categories=category_choices, priorities=priority_choices)
 
 
 @app.route('/admin/users')
@@ -175,7 +246,7 @@ def delete_category(category_id):
 
 @app.route('/tickets/<int:ticket_id>/comments', methods=['GET', 'POST'])
 def comments(ticket_id):
-    if 'user_id' not in session:
+    if not current_user.is_authenticated:
         flash('Please log in to view and add comments.', 'danger')
         return redirect(url_for('login'))
 
@@ -224,4 +295,4 @@ def delete_comment(comment_id):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8001)
+    app.run(host="0.0.0.0", port=8001, debug=True)

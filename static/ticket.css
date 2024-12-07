@@ -1,0 +1,170 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.qa-container {
+    max-width: 90%;
+    margin: 20px auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.question-section {
+    margin-bottom: 40px;
+}
+
+.question-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #0074cc;
+}
+
+.question-meta {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.question-body p {
+    margin-bottom: 10px;
+}
+
+pre.code-block {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    border-radius: 4px;
+}
+
+.answers-section {
+    margin-top: 20px;
+}
+
+.answers-section h2 {
+    font-size: 1.2rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.answer {
+    display: flex;
+    align-items: flex-start;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.votes {
+    font-size: 1.2rem;
+    color: #777;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.answer-body {
+    flex: 1;
+}
+
+.answer-meta {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 10px;
+}
+
+.answer-meta .user {
+    font-weight: bold;
+}
+
+.answer-meta .date {
+    color: #555;
+}
+
+.comments-section {
+    margin-top: 20px;
+    margin-left: 10%;
+}
+
+.comments-section h2 {
+    font-size: 1.2rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.comment {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+.comment:first-child {
+    border-top: none;
+}
+
+.comment .user {
+    font-weight: bold;
+    color: #0074cc;
+    font-size: 0.75rem;
+}
+
+.comment .date {
+    font-size: 0.75rem;
+    color: #555;
+    margin-left: 10px;
+}
+
+.comment p {
+    margin: 5px 0 0;
+    font-size: 0.85rem;
+}
+
+.answer-container {
+    max-width: 600px;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+.answer-box {
+    min-height: 120px;
+    resize: none;
+}
+
+.form-footer {
+    margin-top: 1.5rem;
+}
+
+.form-footer h3 {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+
+.button-container {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.privacy-note {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.hidden {
+    display: none;
+}
