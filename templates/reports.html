@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='reports.css') }}">
+    </head>
+    <body>
+    <div class="row ">
+        <div class="line_diagram">
+            <div class="bg-white">
+                <div class="card-body">
+                    <h4><p class="text-center">Effect on ticket volume on efficiency</p></h4>
+                    <canvas id="myChart3" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart3').getContext('2d');
+                        var myChart1 = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: [{% for key in tickets_closed.keys() %} "{{ key }}", {% endfor %}],
+                                datasets: [{
+                                    fill: false,
+                                    label: 'closed',
+                                    backgroundColor: "rgb(77,157,0)",
+                                    borderColor: "rgba(0,255,13,0.1)",
+                                    data: [{% for value in tickets_closed.values() %} "{{ value }}", {% endfor %}]
+                                },
+                                    {
+                                        fill: false,
+                                        label: 'open',
+                                        backgroundColor: "rgb(157,0,0)",
+                                        borderColor: "rgba(255,0,0,0.1)",
+                                        data: [{% for value in tickets_opened.values() %} "{{ value }}", {% endfor %}]
+                                    }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="diagram">
+            <h4><p class="text-center">Top ticket solvers</p></h4>
+            <ul class="leaderboard-list">
+                {% for item in top_solvers %}
+                    <li>
+                        <span class="name">{{ item[0] }}</span>
+                        <span class="score">{{ item[1] }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+    <div class=" diagrams">
+        <div class="col-md-4 my-4 diagram">
+            <div class="bg-white">
+                <div class="card-body">
+                    <h4><p class="text-center">Tickets by Status</p></h4>
+                    <canvas id="myChart2" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart2').getContext('2d');
+                        var myChart1 = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: [{% for key in tickets_by_status.keys() %} "{{ key }}", {% endfor %}],
+                                datasets: [{
+                                    data: [{% for value in tickets_by_status.values() %} "{{ value }}", {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 my-4 diagram">
+            <div class="bg-white">
+                <div class="card-body">
+                    <h4><p class="text-center">Tickets by Priority</p></h4>
+                    <canvas id="myChart" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: [{% for key in tickets_by_priority.keys() %} "{{ key }}", {% endfor %}],
+                                datasets: [{
+                                    label: 'Employees',
+                                    data: [{% for value in tickets_by_priority.values() %} "{{ value }}", {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 my-4 diagram">
+            <div class="bg-white">
+                <div class="card-body">
+                    <h4><p class="text-center">Tickets by Category</p></h4>
+                    <canvas id="myChart4" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart4').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: [{% for key in tickets_by_category.keys() %} "{{ key }}", {% endfor %}],
+                                datasets: [{
+                                    label: 'Orders',
+                                    data: [{% for value in tickets_by_category.values() %} "{{ value }}", {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        <table>
+            <h4 align="center">Activities</h4>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Action</th>
+                    <th>Time</th>
+                    <th>Ticket Id</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for activity in activities %}
+                    <tr>
+                        <td>{{ activity[0] }}</td>
+                        <td>{{ activity[1] }}</td>
+                        <td>{{ activity[2] }}</td>
+                        <td>{{ activity[3] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+{% endblock %}

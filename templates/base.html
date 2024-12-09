@@ -20,12 +20,12 @@
             <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}"><a
                     href="{{ url_for('index') }}">Home</a></li>
             <li class="menu-item {% if request.endpoint == 'dashboard' %}active{% endif %}"><a
-                    href="{{ url_for('tickets') }}">Dashboard</a></li>
+                    href="{{ url_for('dashboard') }}">Dashboard</a></li>
             <li class="menu-item {% if request.endpoint == 'tickets' %}active{% endif %}"><a
-                    href="{{ url_for('tickets') }}">Tickets</a></li>
-            <li class="menu-item {% if request.endpoint == 'requests' %}active{% endif %}"><a href="#">Requests</a></li>
-            <li class="menu-item {% if request.endpoint == 'articles' %}active{% endif %}"><a href="#">Articles</a></li>
-            <li class="menu-item {% if request.endpoint == 'reports' %}active{% endif %}"><a href="#">Reports</a></li>
+                    href="{{ url_for('tickets') }}">My Tickets</a></li>
+            <li class="menu-item {% if request.endpoint == 'requests' %}active{% endif %}"><a href="{{ url_for('requests') }}">Requests</a></li>
+            <li class="menu-item {% if request.endpoint == 'reports' %}active{% endif %}"><a href="{{ url_for('reports') }}">Reports</a></li>
+            <li class="menu-item {% if request.endpoint == 'articles' %}active{% endif %}"><a href="{{ url_for('manage_users') }}">Users</a></li>
         </ul>
     </aside>
 

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Table</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='requests.css') }}">
+</head>
+<body class="requests">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>Requester</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ticket in tickets %}
+
+                    <tr>
+                    <td><input type="checkbox"></td>
+                    <td>{{ ticket[0] }}</td>
+                        <td><a class="subject" href="{{ url_for('tickets') }}/{{ ticket[0] }}">{{ ticket[1] }}</a></td>
+                    <td>administrator</td>
+                    <td>{{ ticket[5] }}</td>
+                    <td><span class="status {{ ticket[2] }}">{{ ticket[2] }}</span></td>
+                    <td><span class="{{ ticket[3] }}">{{ ticket[3] }}</span></td>
+                    <td>{{ ticket[4] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}

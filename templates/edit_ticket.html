@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_ticket.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    {% from "_util.html" import render_field %}
+<body>
+    <div class="form-container">
+        <h2 class="title is-4 has-text-centered">Edit Ticket</h2>
+        <form action="" method="POST" id="UpdateTicketForm" role="form">
+            {{ form.hidden_tag() }}
+            <div class="field">
+                <label class="label">Title</label>
+                <div class="control">
+                    <input class="input" type="text" name="title" placeholder="Enter ticket title" required value="{{ ticket[1] }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <textarea class="textarea" name="description" placeholder="Describe the issue" required>{{ ticket[2] }}</textarea>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Category</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="category" name="category">
+                            <option value="" disabled selected>Select a category</option>
+                            {% for category in categories %}
+                                {% if category[0] == ticket[5] %}
+                                    <option selected value={{ category[0] }} >{{ category[1] }}</option>
+                                {% else %}
+                                    <option value={{ category[0] }}>{{ category[1] }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+             <div class="field">
+                <label class="label">Priority</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="priority" name="priority" required>
+                            <option value="" disabled selected>Select priority</option>
+                            {% for priority in priorities %}
+                                {% if priority[0] == ticket[4] %}
+                                    <option selected value={{ priority[0] }} >{{ priority[1] }}</option>
+                                {% else %}
+                                    <option value={{ priority[0] }}>{{ priority[1] }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <input id="submit" name="submit" type="submit" value="Update Ticket" class="button is-primary">
+                <a href="{{ url_for('tickets') }}" class="button is-light"> Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+{% endblock %}

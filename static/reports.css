@@ -1,0 +1,65 @@
+.diagrams {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    margin-top: 1%;
+}
+
+.diagram {
+    width: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    position: relative;
+}
+
+
+.line_diagram {
+    width: 75%;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    position: relative;
+    max-width: 60%;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.line_diagram, .diagram {
+    flex: 1;
+    margin: 0 10px;
+    box-sizing: border-box;
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+}
+
+.leaderboard-list li:last-child {
+    border-bottom: none;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.score {
+    color: rgb(14, 12, 6);
+}

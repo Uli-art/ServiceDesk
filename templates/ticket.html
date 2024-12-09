@@ -4,23 +4,55 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='ticket.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='tickets.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+
     {% from "_util.html" import render_field %}
     <body>
-    <a href="{{ url_for('tickets') }}" id="back"><b> &#8592 Back to tickets</b></a>
+    <a href="{{ url_for('dashboard') }}" id="back"><b> &#8592 Back to tickets</b></a>
     <div class="qa-container">
         <div class="question-section">
             <div class="ticket-header">
                 <h1 class="question-title">{{ ticket[1] }}</h1>
-                <div class=" ticket-header priority {{ ticket[11] }}">{{ ticket[11] }}</div>
+                <div class=" ticket-header priority {{ ticket[6] }}">{{ ticket[6] }}</div>
+                {% if is_mine %}
+                    <a href="{{ url_for('tickets') }}/edit/{{ ticket[0] }}"><i class="fas fa-edit"></i></a>
+                {% endif %}
             </div>
             <div class="responsibilities">
-                <span>Status: </span>
-                <div class={{ ticket[10] }}>
-                    <span>{{ ticket[10] }}</span>
-                </div>
+
+                {% if current_user.role_id == 1 %}
+                    <span>Status: </span>
+                    <div class={{ ticket[5] }}>
+                        <span>{{ ticket[5] }}</span>
+                    </div>
+                {% elif current_user.role_id == 2 %}
+                     <form action="" method="POST" id="UpdateStatusForm" role="form">
+            {{ form.hidden_tag() }}
+                    <div class="field">
+                        <label class="label">Status:</label>
+                        <div class="control">
+                            <div class="select">
+                                <select id="status" name="status">
+                                    <option value="" disabled selected>Select a status</option>
+                                    {% for status in statuses %}
+                                        {% if status[0] == ticket[3] %}
+                                            <option selected value={{ status[0] }}>{{ status[1] }}</option>
+                                        {% else %}
+                                            <option value={{ status[0] }}>{{ status[1] }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    <input id="submit" name="submit" type="submit" value="Save" class="button is-primary">
+                    </div>
+                     </form>
+
+                {% endif %}
             </div>
             <div class="question-meta">
-                <span class="asked">Asked: {{ ticket[9] }}</span>
+                <span class="asked">Asked: {{ ticket[4] }}</span>
             </div>
             <div class="question-body">
                 <p>{{ ticket[2] }} </p>
@@ -33,22 +65,25 @@
                         <p>{{ comment[0] }}</p>
                     </div>
                 {% endfor %}
-                <div class="question-meta">
-                    <a id="addComment"><span class="asked">Add comment</span></a>
-                </div>
-
-                <form class="answer-container hidden" id="commentForm" method="POST" action="" role="form">
-                    <h2 class="title is-4">Your Comment</h2>
-                    {{ form.hidden_tag() }}
-                    <textarea id="content" name="content" class="textarea answer-box" placeholder="Type your answer here..." required></textarea>
-                    <div class="button-container">
-                        <p class="privacy-note">
-                            By clicking "Post Your Comment," you agree to our <a href="#">terms of service</a> and
-                            acknowledge you have read our <a href="#">privacy policy</a>.
-                        </p>
+                {% if current_user.role_id == 1 %}
+                    <div class="question-meta">
+                        <a id="addComment"><span class="asked">Add comment</span></a>
                     </div>
-                    <input id="submit" name="submit" type="submit" value="Add Comment" class="button is-primary">
-                </form>
+
+                    <form class="answer-container hidden" id="commentForm" method="POST" action="" role="form">
+                        <h2 class="title is-4">Your Comment</h2>
+                        {{ form.hidden_tag() }}
+                        <textarea id="content" name="content" class="textarea answer-box"
+                                  placeholder="Type your answer here..." required></textarea>
+                        <div class="button-container">
+                            <p class="privacy-note">
+                                By clicking "Post Your Comment," you agree to our <a href="#">terms of service</a> and
+                                acknowledge you have read our <a href="#">privacy policy</a>.
+                            </p>
+                        </div>
+                        <input id="submit" name="submit" type="submit" value="Add Comment" class="button is-primary">
+                    </form>
+                {% endif %}
             </div>
 
             <!-- Answers Section -->
@@ -64,23 +99,44 @@
                             <span class="date">{{ answer[1] }}</span>
                         </div>
                     </div>
-                    </div>
                 {% endfor %}
-            <script>
+            </div>
 
-                document.addEventListener('DOMContentLoaded', () => {
-                    const addComment = document.getElementById('addComment');
-                    const commentForm = document.getElementById('commentForm');
-                    addComment.addEventListener('click', () => {
-                        if (commentForm.classList.contains('hidden')) {
-                            commentForm.classList.remove('hidden');
-                        } else {
-                            commentForm.classList.add('hidden');
-                        }
-                    });
-                });
-            </script>
+            {% if current_user.role_id == 2 %}
+                <div class="question-meta">
+                    <a id="addComment"><span class="asked button is-primary">Add answer</span></a>
+                </div>
+
+                <form class="answer-container hidden" id="commentForm" method="POST" action="" role="form">
+                    <h2 class="title is-4">Your Answer</h2>
+                    {{ form.hidden_tag() }}
+                    <textarea id="content" name="content" class="textarea answer-box"
+                              placeholder="Type your answer here..." required></textarea>
+                    <div class="button-container">
+                        <p class="privacy-note">
+                            By clicking "Post Answer," you agree to our <a href="#">terms of service</a> and
+                            acknowledge you have read our <a href="#">privacy policy</a>.
+                        </p>
+                    </div>
+                    <input id="submit" name="submit" type="submit" value="Submit" class="button is-primary">
+                </form>
+            {% endif %}
         </div>
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const addComment = document.getElementById('addComment');
+                const commentForm = document.getElementById('commentForm');
+                addComment.addEventListener('click', () => {
+                    if (commentForm.classList.contains('hidden')) {
+                        commentForm.classList.remove('hidden');
+                    } else {
+                        commentForm.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
+
     </div>
     </body>
 {% endblock %}

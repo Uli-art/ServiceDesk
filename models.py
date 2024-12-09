@@ -101,3 +101,43 @@ class Ticket:
                        (title, description, priority_id, category_id, creator_id, status_id))
         conn.commit()
         conn.close()
+
+    @staticmethod
+    def update_ticket(title, description, priority_id, category_id, creator_id, status_id, ticket_id):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""UPDATE tickets 
+                            SET title = %s, 
+                                description = %s, 
+                                priority_id = %s, 
+                                category_id = %s, 
+                                creator_id = %s, 
+                                status_id = %s
+                            WHERE id = %s;  """,
+                       (title, description, priority_id, category_id, creator_id, status_id, ticket_id, ))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def update_ticket_status(status_id, ticket_id):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""UPDATE tickets 
+                            SET status_id = %s
+                            WHERE id = %s;  """,
+                       (status_id, ticket_id, ))
+        conn.commit()
+        conn.close()
+
+
+class ActivityLogs:
+
+    @staticmethod
+    def add_log(user_id, action, ticket_id=None):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO activity_logs (user_id, ticket_id, action) '
+                       'VALUES (%s, %s, %s);',
+                       (user_id, ticket_id, action,))
+        conn.commit()
+        conn.close()

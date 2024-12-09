@@ -11,6 +11,19 @@ class TicketForm(FlaskForm):
     submit = SubmitField('Create Ticket')
 
 
+class UpdateTicketForm(FlaskForm):
+    title = StringField('title', validators=[DataRequired(), Length(max=255)])
+    description = TextAreaField('description', validators=[DataRequired()])
+    category = SelectField('category', coerce=int)
+    priority = SelectField('priority', coerce=int)
+    submit = SubmitField('Update Ticket')
+
+
+class UpdateStatusForm(FlaskForm):
+    status = SelectField('status', coerce=int)
+    submit = SubmitField('Save')
+
+
 class CommentForm(FlaskForm):
     content = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Add Comment')
@@ -21,7 +34,7 @@ class RegisterForm(FlaskForm):
     email = StringField('email', validators=[DataRequired(), Email()])
     password = PasswordField('password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('register')
+    submit = SubmitField('Register')
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)

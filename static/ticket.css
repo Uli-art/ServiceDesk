@@ -168,3 +168,8 @@ pre.code-block {
 .hidden {
     display: none;
 }
+
+.control {
+    margin-left: 5%;
+    margin-right: 5%;
+}

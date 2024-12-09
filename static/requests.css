@@ -1,0 +1,107 @@
+
+.table-container {
+    overflow-x: auto;
+    margin: 0 auto;
+    width: 90%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+table td {
+    vertical-align: middle;
+    padding: 8px;
+    text-align: left;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.icon {
+    display: inline-block;
+    text-align: center;
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.Open {
+    color: #d9534f;
+}
+
+.Open::after {
+    content: "🔓";
+}
+
+.In {
+    color: #ffc107;
+}
+
+.In::after {
+    content: "⏳";
+}
+
+.Closed {
+    color: #5cb85c;
+}
+
+.Closed::after {
+    content: "🔒";
+}
+
+.subject {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.subject:hover {
+    text-decoration: underline;
+}
+
+.Critical {
+    color: #a80f01;
+}
+
+.High {
+    color: #ff1c07;
+}
+
+.Medium {
+    color: #ffc107;
+}
+
+.Low {
+    color: rgba(199, 190, 0, 0.82);
+}
