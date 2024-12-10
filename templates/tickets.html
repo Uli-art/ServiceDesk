@@ -32,7 +32,11 @@
                     <div class="agent">
                         <img src="/static/images/user.png" alt="Agent">
                         <div class="agent-info">
-                            <div class="name">{{ ticket[5] }}</div>
+                            {% if ticket[5] %}
+                                <div class="name">{{ ticket[5] }}</div>
+                            {% else %}
+                                <div class="name">Deleted</div>
+                            {% endif %}
                             <div>No groups or companies</div>
                         </div>
                     </div>

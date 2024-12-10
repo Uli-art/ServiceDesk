@@ -72,6 +72,29 @@ class User(UserMixin):
         conn.commit()
         conn.close()
 
+    @staticmethod
+    def update_user(username, email, role_id, user_id):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""UPDATE users 
+                                    SET username = %s, 
+                                        email = %s, 
+                                        role_id = %s 
+                                    WHERE id = %s;  """,
+                       (username, email, role_id, user_id,))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def delete_user(user_id):
+        conn = psycopg2.connect(**Config.DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""DELETE FROM users 
+                            WHERE id = %s; """,
+                       (user_id,))
+        conn.commit()
+        conn.close()
+
 
 class Comment:
     def __init__(self, id, ticket_id, author_id, content):

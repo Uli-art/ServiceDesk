@@ -29,6 +29,13 @@ class CommentForm(FlaskForm):
     submit = SubmitField('Add Comment')
 
 
+class UserForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired(), Length(min=3, max=20)])
+    email = StringField('email', validators=[DataRequired(), Email()])
+    role = SelectField('role', coerce=int)
+    submit = SubmitField('Save user')
+
+
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=3, max=20)])
     email = StringField('email', validators=[DataRequired(), Email()])

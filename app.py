@@ -1,7 +1,7 @@
 import psycopg2
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 
-from forms import LoginForm, RegisterForm, TicketForm, CommentForm, UpdateTicketForm, UpdateStatusForm
+from forms import LoginForm, RegisterForm, TicketForm, CommentForm, UpdateTicketForm, UpdateStatusForm, UserForm
 from db import query_db, execute_db
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import User, Comment, Ticket, ActivityLogs
@@ -140,7 +140,7 @@ def ticket(ticket_id):
         'JOIN statuses ON tickets.status_id = statuses.id '
         'JOIN priorities ON tickets.priority_id = priorities.id '
         'JOIN categories ON tickets.category_id = categories.id '
-        'JOIN users ON tickets.creator_id = users.id '
+        'LEFT JOIN users ON tickets.creator_id = users.id '
         'WHERE tickets.id = %s', (ticket_id,), one=True)
     if not ticket:
         flash('Ticket not found.', 'danger')
@@ -149,7 +149,7 @@ def ticket(ticket_id):
     comments = query_db(
         'SELECT comments.content, DATE(comments.created_at), users.username '
         'FROM comments '
-        'JOIN users ON comments.author_id = users.id and users.role_id = 1 '
+        'LEFT JOIN users ON comments.author_id = users.id and users.role_id = 1 '
         'WHERE comments.ticket_id = %s '
         'ORDER BY comments.created_at DESC', (ticket_id,)
     )
@@ -157,7 +157,7 @@ def ticket(ticket_id):
     answers = query_db(
         'SELECT comments.content, DATE(comments.created_at), users.username '
         'FROM comments '
-        'JOIN users ON comments.author_id = users.id and users.role_id = 2 '
+        'LEFT JOIN users ON comments.author_id = users.id and users.role_id = 2 '
         'WHERE comments.ticket_id = %s '
         'ORDER BY comments.created_at DESC', (ticket_id,)
     )
@@ -314,7 +314,7 @@ def dashboard():
         'JOIN statuses ON tickets.status_id = statuses.id '
         'JOIN priorities ON tickets.priority_id = priorities.id '
         'JOIN categories ON tickets.category_id = categories.id '
-        'JOIN users ON tickets.creator_id = users.id ')
+        'LEFT JOIN users ON tickets.creator_id = users.id ')
     return render_template('tickets.html', tickets=tickets)
 
 
@@ -344,6 +344,48 @@ def manage_users():
         'JOIN roles ON users.role_id = roles.id'
     )
     return render_template('admin_users.html', users=users)
+
+
+@app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+@role_required(2)
+def edit_user(user_id):
+    user = query_db(
+        'SELECT users.id, users.username, users.email, users.role_id '
+        'FROM users '
+        'WHERE users.id = %s', (user_id,), one=True)
+
+    if not user:
+        flash('User not found.', 'danger')
+        return redirect(url_for('admin_users'))
+
+    role_choices = query_db(
+        'SELECT roles.id, roles.name '
+        'FROM roles '
+    )
+
+    form = UserForm(request.form)
+    form.role.choices = role_choices
+    if form.validate_on_submit():
+        User.update_user(form.username.data, form.email.data, form.role.data, user_id)
+        ActivityLogs.add_log(current_user.id, "update user")
+        return redirect(url_for('manage_users'))
+
+    return render_template('edit_user.html', user=user, roles=role_choices, form=form)
+
+
+@app.route('/admin/users/delete/<int:user_id>', methods=['GET'])
+def delete_user(user_id):
+    user = User.get_user_by_id(user_id)
+    if user:
+        if user.id == current_user.id:
+            flash('Вы не можете удалить свой собственный аккаунт.', 'error')
+            return redirect(url_for('manage_users'))
+
+        User.delete_user(user_id)
+        ActivityLogs.add_log(current_user.id, f"delete user {user_id}")
+
+    return redirect(url_for('manage_users'))
 
 
 @app.route('/categories', methods=['GET', 'POST'])
